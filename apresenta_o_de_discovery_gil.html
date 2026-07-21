@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Documentação PDI - Armando</title>
+  
+  <link class="js-favicon" rel="icon" href="https://raw.githubusercontent.com/ProdutosAUVP/reviewdesign/main/meme_this_is_fine_dog.png" type="image/png">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { satoshi: ['Satoshi', 'sans-serif'] },
+          colors: {
+            paper: { DEFAULT: '#F9F8F6', dark: '#EAE7E0' },
+            ink: { DEFAULT: '#1C1C1C', light: '#595959' },
+            accent: { DEFAULT: '#38805A', light: '#E2E8E4' },
+            danger: { DEFAULT: '#D96C53' },
+            neutral: { DEFAULT: '#6B7280' },
+            brand: {
+              orange: '#FF6B35',
+              blue: '#7B9EFF',
+              pink: '#FF4F9A'
+            }
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            spinSlow: {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' }
+            }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'spin-slow': 'spinSlow 20s linear infinite'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Satoshi', sans-serif; }
+
+    /* Background estático */
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(28, 28, 28, 0.04) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(28, 28, 28, 0.04) 1px, transparent 1px);
+    }
+    html.dark .bg-grid {
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #d4d4d8; }
+    html.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; }
+
+    /* Estilos para as Abas de Navegação */
+    .nav-tab {
+      position: relative;
+      color: var(--color-ink-light);
+      transition: color 0.3s ease;
+    }
+    .dark .nav-tab { color: rgba(255, 255, 255, 0.5); }
+    
+    .nav-tab:hover { color: var(--color-ink); }
+    .dark .nav-tab:hover { color: white; }
+
+    .nav-tab.active {
+      color: var(--color-ink);
+      font-weight: 700;
+    }
+    .dark .nav-tab.active { color: white; }
+
+    .nav-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--color-accent);
+    }
+    
+    /* Utilitário para Cores CSS Customizadas na Navbar */
+    :root {
+      --color-ink: #1C1C1C;
+      --color-ink-light: #595959;
+      --color-accent: #38805A;
+    }
+    .dark {
+      --color-ink: #FFFFFF;
+      --color-ink-light: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-paper dark:bg-[#121212] text-ink dark:text-[#E0E0E0] relative overflow-x-hidden selection:bg-accent/20">
+
+  <div class="fixed inset-0 z-[-1] bg-grid pointer-events-none"></div>
+
+  <!-- NAVBAR SUPERIOR -->
+  <nav class="sticky top-0 z-50 bg-paper/90 dark:bg-[#121212]/90 backdrop-blur-md border-b border-paper-dark dark:border-white/10 transition-colors duration-500">
+    <div class="max-w-[1200px] mx-auto px-4 md:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      
+      <!-- Logo / Título PDI -->
+      <div class="flex items-center gap-3 shrink-0 w-full md:w-auto justify-center md:justify-start">
+        <div class="w-8 h-8 rounded bg-ink dark:bg-white text-paper dark:text-ink flex items-center justify-center font-black text-sm">
+          A.
+        </div>
+        <div class="flex flex-col">
+          <span class="text-sm font-black tracking-widest uppercase text-ink dark:text-white leading-none">
+            Documentação PDI
+          </span>
+          <span class="text-[10px] uppercase tracking-widest text-ink-light dark:text-white/50 font-bold mt-0.5">
+            Armando
+          </span>
+        </div>
+      </div>
+
+      <!-- Abas (Tabs) -->
+      <div class="flex items-center gap-6 overflow-x-auto w-full md:w-auto justify-center md:justify-end no-scrollbar">
+        <button onclick="switchTab('discovery')" id="tab-btn-discovery" class="nav-tab active text-xs uppercase tracking-widest pb-1 whitespace-nowrap">
+          Discovery
+        </button>
+        <button onclick="switchTab('executiva')" id="tab-btn-executiva" class="nav-tab text-xs uppercase tracking-widest pb-1 whitespace-nowrap">
+          Apresentação Executiva
+        </button>
+        
+        <div class="w-px h-4 bg-paper-dark dark:bg-white/20 mx-2 hidden md:block"></div>
+        
+        <!-- Botão de Tema Integrado na Navbar -->
+        <button onclick="toggleTheme()" class="hidden md:flex w-8 h-8 rounded-full border border-paper-dark dark:border-white/10 items-center justify-center text-ink-light hover:text-ink dark:text-white/50 dark:hover:text-white transition-transform hover:scale-105 shrink-0" aria-label="Alternar Tema">
+          <i id="icon-sun" class="fa-solid fa-sun hidden dark:block text-xs"></i>
+          <i id="icon-moon" class="fa-solid fa-moon block dark:hidden text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Botão de Tema Mobile -->
+  <button onclick="toggleTheme()" class="md:hidden fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white dark:bg-[#1A1A1A] border border-paper-dark dark:border-white/10 shadow-lg flex items-center justify-center text-ink-light hover:text-ink dark:text-white/50 dark:hover:text-white transition-transform hover:scale-105" aria-label="Alternar Tema">
+    <i class="fa-solid fa-sun hidden dark:block"></i>
+    <i class="fa-solid fa-moon block dark:hidden"></i>
+  </button>
+
+  <!-- ========================================================================= -->
+  <!-- CONTEÚDO DA ABA: DISCOVERY                                                -->
+  <!-- ========================================================================= -->
+  <div id="tab-content-discovery" class="tab-content block">
+    
+    <!-- VIEW INTRO (Capa da Apresentação Discovery) -->
+    <main id="view-intro" class="w-full px-4 py-10 flex flex-col items-center justify-center min-h-[calc(100vh-80px)] block">
+      <div class="w-full max-w-[650px] bg-white dark:bg-[#1A1A1A] border border-paper-dark dark:border-white/5 shadow-xl shadow-black/5 dark:shadow-white/5 p-8 md:p-12 flex flex-col relative rounded-[4px] animate-fade-in-up overflow-visible">
+        
+        <!-- Ilustração Abstrata Fundo Intro -->
+        <div class="absolute top-[-50px] right-[-50px] opacity-10 dark:opacity-5 pointer-events-none animate-spin-slow">
+          <svg width="300" height="300" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="overflow-visible">
+            <circle cx="100" cy="100" r="80" stroke="#38805A" stroke-width="2" stroke-dasharray="10 10"/>
+            <path d="M100 0 L100 200 M0 100 L200 100" stroke="#38805A" stroke-width="1"/>
+            <circle cx="100" cy="100" r="40" stroke="#38805A" stroke-width="4"/>
+          </svg>
+        </div>
+
+        <div class="relative z-10">
+          <div class="text-center sm:text-left">
+            <span class="inline-block py-0.5 px-3 border border-accent/20 text-[10px] font-bold tracking-widest bg-accent/10 text-accent dark:bg-white/5 dark:text-white/70 uppercase w-max mb-4 rounded-full">
+              PLAYBOOK TÁTICO
+            </span>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tighter uppercase text-ink dark:text-white leading-[0.85] font-satoshi mt-2">
+              Chega de construir na base do <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#72A68C] italic font-light tracking-tight">achismo.</span>
+            </h1>
+            <p class="text-base text-ink-light dark:text-white/70 font-medium mt-6 font-satoshi max-w-md leading-relaxed">
+              Um kit de Discovery Lean para times de produto que vivem sob pressão de prazo — sem burocracia, com resultado mensurável.
+            </p>
+          </div>
+
+          <div class="border-b border-paper-dark dark:border-white/10 mb-8 mt-10"></div>
+        </div>
+
+        <div class="relative z-10 flex flex-col gap-6 w-full">
+          <div class="w-full flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div class="flex gap-4">
+               <div class="text-center sm:text-left">
+                 <span class="block text-2xl font-black text-ink dark:text-white">4</span>
+                 <span class="text-[9px] uppercase tracking-widest font-bold text-ink-light">Métodos Ágeis</span>
+               </div>
+               <div class="w-px h-10 bg-paper-dark dark:bg-white/10"></div>
+               <div class="text-center sm:text-left">
+                 <span class="block text-2xl font-black text-ink dark:text-white">10</span>
+                 <span class="text-[9px] uppercase tracking-widest font-bold text-ink-light">Slides Táticos</span>
+               </div>
+            </div>
+            <button onclick="startPresentation()" class="w-full sm:w-auto justify-center px-8 py-4 bg-ink text-paper dark:bg-white dark:text-[#121212] text-[10px] uppercase tracking-widest font-bold hover:bg-ink-light dark:hover:bg-white/80 transition-all hover:shadow-lg hover:-translate-y-1 flex items-center gap-2 rounded-[2px]">
+              Iniciar Pitch <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- VIEW SLIDES (Apresentação interativa) -->
+    <main id="view-slides" class="w-full px-4 py-6 md:py-10 flex flex-col items-center justify-center min-h-[calc(100vh-80px)] hidden">
+      
+      <div class="w-full max-w-[1000px] bg-white dark:bg-[#1A1A1A] border border-paper-dark dark:border-white/5 shadow-xl shadow-black/5 dark:shadow-white/5 p-6 md:p-10 flex flex-col rounded-[4px] relative overflow-visible">
+        
+        <!-- Top Bar do Slide -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-paper-dark dark:border-white/10 pb-4 mb-8 gap-4 md:gap-6 relative z-10">
+          <div class="relative w-full md:w-auto text-center md:text-left cursor-pointer group" onclick="switchView('intro')">
+            <h1 class="text-xl md:text-2xl font-black tracking-tighter uppercase text-ink dark:text-white leading-[0.85] font-satoshi mt-2 md:mt-0 flex items-center gap-3 transition-transform group-hover:-translate-x-1">
+               <span class="text-ink-light text-sm"><i class="fa-solid fa-arrow-left"></i></span>
+               Discovery <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#72A68C] italic font-light tracking-tight ml-1">Ágil.</span>
+            </h1>
+          </div>
+
+          <div class="w-full md:w-1/3 flex flex-col justify-end block mt-4 md:mt-0">
+            <div class="flex justify-between items-end mb-2">
+              <span class="text-[9px] uppercase font-bold tracking-widest text-ink-light dark:text-white/50">Progresso do Pitch</span>
+              <span id="slide-counter" class="text-xs font-bold text-ink dark:text-white">01/10</span>
+            </div>
+            <div class="w-full h-[2px] bg-paper-dark dark:bg-white/10 relative overflow-hidden rounded-full">
+              <div id="progress-bar" class="absolute top-0 left-0 h-full bg-accent transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estrutura do Grid: items-start garante alinhamento pelo topo (subtítulo) -->
+        <div id="slide-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full items-start min-h-[400px] relative z-10">
+          
+          <!-- Conteúdo Textual do Slide -->
+          <div id="slide-text-container" class="flex flex-col justify-start min-w-0 flex-1 pt-2 md:pt-0 w-full h-full items-center md:items-start mx-auto md:mx-0">
+            
+            <span id="slide-badge" class="inline-block py-1 px-3 border border-accent/20 text-[9px] font-bold tracking-widest bg-accent/10 text-accent dark:bg-white/5 dark:text-white/70 uppercase w-max mb-4 rounded-full shadow-sm">
+              SLIDE_01
+            </span>
+            
+            <h2 id="slide-title" class="text-3xl md:text-4xl font-bold mb-4 text-ink dark:text-white leading-tight"></h2>
+            
+            <p id="slide-intro" class="text-base md:text-lg text-ink-light dark:text-white/70 leading-relaxed mb-8 font-medium border-l-4 border-accent pl-4 py-1"></p>
+            
+            <div id="slide-content-container" class="w-full flex flex-col gap-4 text-left">
+              <!-- Injetado via JS -->
+            </div>
+
+            <!-- Rodapé de Referência Injetado Dinamicamente -->
+            <div id="slide-reference-container" class="w-full mt-8 hidden">
+              <p id="slide-reference-text" class="text-[10px] text-ink-light/80 dark:text-white/40 border-t border-paper-dark dark:border-white/10 pt-3 font-medium leading-relaxed"></p>
+            </div>
+          </div>
+
+          <!-- Coluna da Ilustração (Oculta via Tailwind já que as imagens foram removidas, mas mantida no DOM para a lógica do grid não quebrar se quiserem reativar) -->
+          <div id="slide-illustration-container" class="flex justify-center items-start w-full h-full min-h-[300px] p-2 md:p-6 md:pt-[96px] relative hidden">
+          </div>
+
+        </div>
+
+        <div id="nav-footer" class="w-full flex flex-col-reverse md:flex-row justify-between items-center mt-10 pt-6 border-t border-paper-dark dark:border-white/10 gap-4 md:gap-0 relative z-10">
+          <button id="btn-prev" onclick="handlePrev()" class="w-full md:w-auto justify-center md:justify-start text-[11px] uppercase tracking-widest font-bold text-ink-light hover:text-ink dark:text-white/50 dark:hover:text-white disabled:opacity-0 transition-all hover:-translate-x-1 flex items-center gap-2 py-3 md:py-0">
+            <i class="fa-solid fa-arrow-left"></i> Anterior
+          </button>
+
+          <button id="btn-next" onclick="handleNext()" class="w-full md:w-auto justify-center px-10 py-4 bg-ink text-paper dark:bg-white dark:text-[#121212] text-[11px] uppercase tracking-widest font-bold hover:bg-ink-light dark:hover:bg-white/80 disabled:opacity-30 transition-all hover:translate-x-1 hover:shadow-lg flex items-center gap-2 rounded-[2px]">
+            Próximo <i class="fa-solid fa-arrow-right"></i>
+          </button>
+
+          <button id="btn-restart" onclick="startPresentation()" class="w-full md:w-auto justify-center hidden px-10 py-4 border border-paper-dark dark:border-white/20 text-ink dark:text-white text-[11px] uppercase tracking-widest font-bold hover:bg-paper-dark/10 dark:hover:bg-white/5 transition-colors rounded-[2px]">
+            <i class="fa-solid fa-rotate-left mr-2"></i> Recomeçar Pitch
+          </button>
+        </div>
+      </div>
+    </main>
+  </div> <!-- Fim Aba Discovery -->
+
+  <!-- ========================================================================= -->
+  <!-- CONTEÚDO DA ABA: APRESENTAÇÃO EXECUTIVA                                   -->
+  <!-- ========================================================================= -->
+  <div id="tab-content-executiva" class="tab-content hidden">
+    <main class="w-full px-4 py-10 flex flex-col items-center justify-center min-h-[calc(100vh-80px)] block">
+      
+      <div class="text-center animate-fade-in-up flex flex-col items-center">
+        <div class="w-20 h-20 bg-paper-dark dark:bg-white/5 rounded-full flex items-center justify-center mb-6">
+          <i class="fa-solid fa-person-digging text-3xl text-ink-light dark:text-white/30"></i>
+        </div>
+        
+        <h2 class="text-2xl md:text-3xl font-black uppercase tracking-tighter text-ink dark:text-white mb-3">
+          Em Construção
+        </h2>
+        
+        <p class="text-sm text-ink-light dark:text-white/60 max-w-sm leading-relaxed">
+          O conteúdo para a Apresentação Executiva será adicionado aqui em breve. 
+        </p>
+
+        <button onclick="switchTab('discovery')" class="mt-8 px-6 py-3 border border-paper-dark dark:border-white/20 text-ink dark:text-white text-[10px] uppercase tracking-widest font-bold hover:bg-paper-dark/10 dark:hover:bg-white/5 transition-colors rounded-[2px]">
+          Voltar para Discovery
+        </button>
+      </div>
+
+    </main>
+  </div> <!-- Fim Aba Executiva -->
+
+  <script>
+    // --- GERENCIAMENTO DE ABAS (TABS) ---
+    function switchTab(tabId) {
+      // 1. Esconde todos os conteúdos de abas
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => {
+        content.classList.add('hidden');
+        content.classList.remove('block');
+      });
+
+      // 2. Remove estado ativo de todos os botões de aba
+      const tabButtons = document.querySelectorAll('.nav-tab');
+      tabButtons.forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // 3. Mostra o conteúdo da aba selecionada
+      const targetContent = document.getElementById(`tab-content-${tabId}`);
+      if (targetContent) {
+        targetContent.classList.remove('hidden');
+        targetContent.classList.add('block');
+      }
+
+      // 4. Adiciona estado ativo ao botão clicado
+      const targetButton = document.getElementById(`tab-btn-${tabId}`);
+      if (targetButton) {
+        targetButton.classList.add('active');
+      }
+    }
+
+    // --- GESTÃO DO TEMA DARK/LIGHT ---
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    // Cores definidas para cada método (removendo a dependência de ilustrações visuais)
+    const colorThemes = {
+      default: { text: "text-accent", bg: "bg-accent/10", border: "border-accent/20", borderLeft: "border-accent", hex: "#38805A" },
+      orange: { text: "text-brand-orange", bg: "bg-brand-orange/10", border: "border-brand-orange/20", borderLeft: "border-brand-orange", hex: "#FF6B35" },
+      blue: { text: "text-brand-blue", bg: "bg-brand-blue/10", border: "border-brand-blue/20", borderLeft: "border-brand-blue", hex: "#7B9EFF" },
+      pink: { text: "text-brand-pink", bg: "bg-brand-pink/10", border: "border-brand-pink/20", borderLeft: "border-brand-pink", hex: "#FF4F9A" }
+    };
+
+    // --- CONTEÚDO DOS SLIDES DA ABA DISCOVERY ---
+    // Reposicionamos as informações para layout fullWidth e removemos as visualizações (animações).
+    const presentationSlides = [
+      {
+        badge: "O PROBLEMA",
+        themeKey: "default",
+        title: "O Elefante (ou hipopótamo) na sala.",
+        intro: "Prazos curtos, demandas top-down e o custo invisível da refação.",
+        fullWidth: true,
+        reference: "*1. Custo do Retrabalho: Barry Boehm, 'Software Engineering Economics'.",
+        content: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2">
+            <div class="flex flex-col gap-4">
+              <div class="p-5 border border-paper-dark dark:border-white/10 rounded-[2px] bg-paper-dark/20 dark:bg-white/5 h-full flex flex-col justify-center">
+                <p class="text-base font-bold text-ink dark:text-white mb-3">A nossa realidade atual:</p>
+                <ul class="text-sm text-ink-light dark:text-white/70 space-y-3 list-disc pl-5">
+                  <li>Prazos curtos e demandas puramente top-down.</li>
+                  <li>Corremos o risco de fazer a <em class="text-danger font-bold not-italic">coisa errada muito bem feita</em>.</li>
+                </ul>
+              </div>
+              <div class="p-4 border-l-4 border-danger bg-danger/5 shadow-sm">
+                <p class="text-sm font-bold text-danger">Cada hora de Discovery economiza até 10 horas de ajuste no código.<sup class="text-[10px] ml-1 text-danger/70">*1</sup></p>
+              </div>
+            </div>
+
+            <!-- BLOCO SOBRE O EFEITO HIPPO - FOCO LIDERANÇA -->
+            <div class="p-5 border border-accent/20 bg-accent/5 rounded-[2px] relative overflow-hidden group h-full flex flex-col justify-center">
+              <i class="fa-solid fa-hippo absolute -right-2 -bottom-2 text-[80px] text-accent/10 transition-transform group-hover:scale-110"></i>
+              <div class="relative z-10">
+                <p class="text-sm font-bold text-ink dark:text-white flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-hippo text-accent"></i> O Efeito HIPPO (Highest-Paid Person's Opinion)
+                </p>
+                <p class="text-[13px] text-ink-light dark:text-white/80 leading-relaxed pr-4 mb-4">
+                  Um viés comum onde a intuição estratégica dita a execução direta. A visão da liderança é <strong>essencial</strong>, mas construir uma funcionalidade sem dados aumenta muito o risco financeiro.
+                </p>
+                <div class="bg-white/60 dark:bg-black/20 p-4 rounded border border-accent/10">
+                   <p class="text-[11px] font-bold text-ink dark:text-white mb-3 uppercase tracking-wide flex items-center"><i class="fa-solid fa-handshake-angle text-accent mr-2"></i> Como alinhamos Visão e Segurança?</p>
+                   <ul class="text-[11px] text-ink-light dark:text-white/70 space-y-2.5 list-none">
+                     <li class="flex items-start gap-2"><i class="fa-solid fa-check text-accent mt-0.5"></i> <span><strong>Intuição como Hipótese:</strong> Elevamos a diretriz ao posto de nossa principal aposta a ser validada no mercado.</span></li>
+                     <li class="flex items-start gap-2"><i class="fa-solid fa-check text-accent mt-0.5"></i> <span><strong>Proteção de Orçamento:</strong> Usamos poucas horas de <em>Discovery</em> para blindar o capital que será investido no código.</span></li>
+                   </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        badge: "DADOS REAIS",
+        themeKey: "default",
+        title: "O Custo do Achismo",
+        intro: "Por que não podemos continuar assim?",
+        fullWidth: true,
+        reference: "*2. Causa de Falhas: PMI Pulse of the Profession & CHAOS Report (Standish Group).",
+        content: `
+          <div class="flex flex-col gap-4">
+            <div class="p-5 border-l-4 border-danger bg-danger/5">
+              <span class="text-4xl font-black text-danger block mb-2 flex items-start">70% <sup class="text-lg ml-1 opacity-70">*2</sup></span>
+              <p class="text-base font-medium text-ink dark:text-white">do retrabalho em produto vem de requisitos mal definidos desde o início.</p>
+            </div>
+            <p class="text-sm text-ink-light dark:text-white/70 leading-relaxed pl-1 mt-2">
+              Construir rápido a funcionalidade errada custa <strong>3x mais caro</strong><sup class="text-[10px] ml-0.5">*2</sup> do que parar 2 horas para alinhar o problema real.
+            </p>
+          </div>
+        `
+      },
+      {
+        badge: "O FLUXO ATUAL",
+        themeKey: "default",
+        title: "Como chegamos aqui",
+        intro: "O fluxo viciado que gera estresse e correria.",
+        fullWidth: true,
+        content: `
+          <div class="flex flex-col gap-3 mt-4 max-w-md">
+            <div class="p-4 border border-paper-dark dark:border-white/10 rounded-[2px] flex items-center bg-white dark:bg-[#1A1A1A]">
+              <span class="w-6 text-center font-bold text-ink-light">1</span>
+              <span class="text-sm font-medium ml-2">Demanda (Top-Down)</span>
+            </div>
+            <div class="flex justify-center text-ink-light"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="p-4 border border-danger/50 bg-danger/5 rounded-[2px] flex items-center">
+              <span class="w-6 text-center font-bold text-danger">2</span>
+              <span class="text-sm font-bold text-danger ml-2">Direto para a execução</span>
+            </div>
+            <div class="flex justify-center text-ink-light"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="p-4 border border-paper-dark dark:border-white/10 rounded-[2px] flex items-center bg-white dark:bg-[#1A1A1A]">
+              <span class="w-6 text-center font-bold text-ink-light">3</span>
+              <span class="text-sm font-medium ml-2">Revisão e Ajustes Finais</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        badge: "QUEBRANDO MITOS",
+        themeKey: "default",
+        title: "O que Discovery NÃO é",
+        intro: "Antecipando objeções da liderança.",
+        fullWidth: true,
+        content: `
+          <div class="flex flex-col gap-4">
+            <div class="flex gap-4 items-center p-5 border border-paper-dark dark:border-white/10 rounded-[2px] bg-white dark:bg-[#1A1A1A]">
+              <span class="text-danger font-bold text-2xl w-6 text-center">≠</span>
+              <p class="text-sm font-medium text-ink-light dark:text-white/80">Pesquisa acadêmica demorada de 1 mês.</p>
+            </div>
+            <div class="flex gap-4 items-center p-5 border border-paper-dark dark:border-white/10 rounded-[2px] bg-white dark:bg-[#1A1A1A]">
+              <span class="text-danger font-bold text-2xl w-6 text-center">≠</span>
+              <p class="text-sm font-medium text-ink-light dark:text-white/80">Atrasar a sprint de desenvolvimento.</p>
+            </div>
+            <div class="p-6 border border-accent/40 bg-accent/5 rounded-[2px] mt-2 max-w-xl">
+              <p class="text-base font-bold text-ink dark:text-white flex items-center gap-3">
+                <span class="text-accent font-black text-2xl w-6 text-center">=</span> 
+                Redução de incerteza tática em horas antes da execução.
+              </p>
+            </div>
+          </div>
+        `
+      },
+      {
+        badge: "ARSENAL TÁTICO",
+        themeKey: "default",
+        title: "Os 4 Métodos",
+        intro: "Um toolkit ágil. Escolha a ferramenta certa conforme o problema.",
+        fullWidth: true,
+        content: `
+          <p class="text-sm text-ink-light dark:text-white/70 mb-4 max-w-2xl">
+            Não aplicaremos todos de uma vez. Trata-se de um <strong>canivete suíço</strong> para usar estrategicamente, dependendo da necessidade da demanda.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="p-4 border-l-4 border-accent bg-paper-dark/20 dark:bg-[#2A2A2A] rounded-[2px] hover:-translate-y-1 transition-transform">
+              <h4 class="font-bold text-sm text-ink dark:text-white mb-1">1. Matriz CSD</h4>
+              <p class="text-[11px] text-ink-light dark:text-white/70 mb-2">Alinhamento e desarmar achismos.</p>
+              <span class="text-[9px] uppercase font-bold text-accent"><i class="fa-solid fa-stopwatch mr-1"></i> 2h</span>
+            </div>
+            <div class="p-4 border-l-4 border-brand-orange bg-paper-dark/20 dark:bg-[#2A2A2A] rounded-[2px] hover:-translate-y-1 transition-transform">
+              <h4 class="font-bold text-sm text-ink dark:text-white mb-1">2. LDJ</h4>
+              <p class="text-[11px] text-ink-light dark:text-white/70 mb-2">Problemas → Soluções sem debate.</p>
+              <span class="text-[9px] uppercase font-bold text-brand-orange"><i class="fa-solid fa-stopwatch mr-1"></i> 1.5h</span>
+            </div>
+            <div class="p-4 border-l-4 border-brand-blue bg-paper-dark/20 dark:bg-[#2A2A2A] rounded-[2px] hover:-translate-y-1 transition-transform">
+              <h4 class="font-bold text-sm text-ink dark:text-white mb-1">3. Lean Canvas</h4>
+              <p class="text-[11px] text-ink-light dark:text-white/70 mb-2">Hipóteses de novos produtos.</p>
+              <span class="text-[9px] uppercase font-bold text-brand-blue"><i class="fa-solid fa-stopwatch mr-1"></i> 3h</span>
+            </div>
+            <div class="p-4 border-l-4 border-brand-pink bg-paper-dark/20 dark:bg-[#2A2A2A] rounded-[2px] hover:-translate-y-1 transition-transform">
+              <h4 class="font-bold text-sm text-ink dark:text-white mb-1">4. Guerrilha</h4>
+              <p class="text-[11px] text-ink-light dark:text-white/70 mb-2">Validação rápida de tela.</p>
+              <span class="text-[9px] uppercase font-bold text-brand-pink"><i class="fa-solid fa-stopwatch mr-1"></i> 1-2 Dias</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        badge: "MÉTODO 01",
+        themeKey: "default",
+        title: "Matriz CSD",
+        intro: "Certezas, Suposições e Dúvidas.",
+        fullWidth: true,
+        content: `
+          <div class="mb-5 p-4 border-l-4 border-accent bg-accent/5 rounded-r-[2px] max-w-2xl">
+            <p class="text-sm font-medium text-ink dark:text-white leading-relaxed">
+              <strong class="font-black flex items-center gap-2 mb-1 text-accent"><i class="fa-solid fa-bullseye"></i> Melhor aplicabilidade:</strong> 
+              Demandas confusas ou em fase inicial (Kickoff). Ideal para separar o que é dado real do que é apenas "palpite" sem travar o time.
+            </p>
+          </div>
+          <ul class="text-base text-ink dark:text-white space-y-4 font-medium mt-2">
+            <li class="flex gap-3 items-center"><strong class="text-accent bg-accent/10 px-2 py-1 rounded">1</strong> Board com colunas C, S e D.</li>
+            <li class="flex gap-3 items-center"><strong class="text-accent bg-accent/10 px-2 py-1 rounded">2</strong> Time preenche post-its em silêncio.</li>
+            <li class="flex gap-3 items-start"><strong class="text-accent bg-accent/10 px-2 py-1 rounded">3</strong> <span class="pt-1">O que parece Certeza mas não tem dados volta para Suposição.</span></li>
+            <li class="flex gap-3 items-start"><strong class="text-accent bg-accent/10 px-2 py-1 rounded">4</strong> <span class="pt-1">Votação nas Dúvidas Críticas para resolver antes de agir.</span></li>
+          </ul>
+        `
+      },
+      {
+        badge: "MÉTODO 02",
+        themeKey: "orange",
+        title: "Lightning Decision Jam",
+        intro: "Do problema à solução sem debate infinito.",
+        fullWidth: true,
+        content: `
+          <div class="mb-5 p-4 border-l-4 border-brand-orange bg-brand-orange/5 rounded-r-[2px] max-w-2xl">
+            <p class="text-sm font-medium text-ink dark:text-white leading-relaxed">
+              <strong class="font-black flex items-center gap-2 mb-1 text-brand-orange"><i class="fa-solid fa-bullseye"></i> Melhor aplicabilidade:</strong> 
+              Reuniões travadas ou quando a liderança impõe uma solução sem avaliar o problema raiz. Foca o time em encontrar rotas viáveis rapidamente.
+            </p>
+          </div>
+          <ul class="text-base text-ink dark:text-white space-y-4 font-medium mt-2">
+            <li class="flex gap-3 items-center"><strong class="text-brand-orange bg-brand-orange/10 px-2 py-1 rounded">1</strong> Listem problemas silenciosamente.</li>
+            <li class="flex gap-3 items-start"><strong class="text-brand-orange bg-brand-orange/10 px-2 py-1 rounded">2</strong> <span class="pt-1">Transformem o + votado em "Como poderíamos...?".</span></li>
+            <li class="flex gap-3 items-center"><strong class="text-brand-orange bg-brand-orange/10 px-2 py-1 rounded">3</strong> Escrevam soluções e votem silenciosamente.</li>
+            <li class="flex gap-3 items-center"><strong class="text-brand-orange bg-brand-orange/10 px-2 py-1 rounded">4</strong> Priorizem na Matriz Esforço x Impacto.</li>
+          </ul>
+        `
+      },
+      {
+        badge: "MÉTODO 03",
+        themeKey: "blue",
+        title: "Lean UX Canvas",
+        intro: "Hipóteses de negócio estruturadas.",
+        fullWidth: true,
+        content: `
+          <div class="mb-5 p-4 border-l-4 border-brand-blue bg-brand-blue/5 rounded-r-[2px] max-w-2xl">
+            <p class="text-sm font-medium text-ink dark:text-white leading-relaxed">
+              <strong class="font-black flex items-center gap-2 mb-1 text-brand-blue"><i class="fa-solid fa-bullseye"></i> Melhor aplicabilidade:</strong> 
+              Épicos ou novos produtos inteiros. Quando a diretoria pede uma "feature grande" e precisamos garantir que o esforço técnico gere métricas de negócio reais.
+            </p>
+          </div>
+          <ul class="text-base text-ink dark:text-white space-y-4 font-medium mt-2">
+            <li class="flex gap-3 items-center"><strong class="text-brand-blue bg-brand-blue/10 px-2 py-1 rounded">1</strong> Defina Objetivo de Negócio e Usuários.</li>
+            <li class="flex gap-3 items-center"><strong class="text-brand-blue bg-brand-blue/10 px-2 py-1 rounded">2</strong> Mapeie Benefícios da ação.</li>
+            <li class="flex gap-3 items-center"><strong class="text-brand-blue bg-brand-blue/10 px-2 py-1 rounded">3</strong> Formule Hipóteses de Solução.</li>
+            <li class="flex gap-3 items-start"><strong class="text-brand-blue bg-brand-blue/10 px-2 py-1 rounded">4</strong> <span class="pt-1">Defina a Métrica de Sucesso e o menor teste.</span></li>
+          </ul>
+        `
+      },
+      {
+        badge: "MÉTODO 04",
+        themeKey: "pink",
+        title: "Teste de Guerrilha",
+        intro: "Validação rápida com usuários reais.",
+        fullWidth: true,
+        reference: "*3. Estudo Empírico: Nielsen Norman Group (Why You Only Need to Test with 5 Users).",
+        content: `
+          <div class="mb-5 p-4 border-l-4 border-brand-pink bg-brand-pink/5 rounded-r-[2px] max-w-2xl">
+            <p class="text-sm font-medium text-ink dark:text-white leading-relaxed">
+              <strong class="font-black flex items-center gap-2 mb-1 text-brand-pink"><i class="fa-solid fa-bullseye"></i> Melhor aplicabilidade:</strong> 
+              Fluxos críticos (transações, onboarding). Antes da engenharia escrever uma linha de código, garantimos que o usuário não vai se perder na tela.
+            </p>
+          </div>
+          <ul class="text-base text-ink dark:text-white space-y-4 font-medium mt-2">
+            <li class="flex gap-3 items-center"><strong class="text-brand-pink bg-brand-pink/10 px-2 py-1 rounded">1</strong> Protótipo simples (pode ser lo-fi).</li>
+            <li class="flex gap-3 items-center"><strong class="text-brand-pink bg-brand-pink/10 px-2 py-1 rounded">2</strong> Aborde pessoas no corredor (15 min).</li>
+            <li class="flex gap-3 items-center"><strong class="text-brand-pink bg-brand-pink/10 px-2 py-1 rounded">3</strong> Peça para "pensar em voz alta".</li>
+            <li class="flex gap-3 items-center"><strong class="text-brand-pink bg-brand-pink/10 px-2 py-1 rounded">4</strong> <span>5 usuários revelam 80% dos problemas.<sup class="text-[10px] ml-0.5 text-brand-pink">*3</sup></span></li>
+          </ul>
+        `
+      },
+      {
+        badge: "PRÓXIMOS PASSOS",
+        themeKey: "default",
+        title: "Proposta de Piloto",
+        intro: "Um teste controlado em um ambiente seguro. Eu assumo a facilitação do toolkit, garantimos o prazo e avaliamos os resultados da redução de incertezas.",
+        fullWidth: true,
+        content: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mt-2 w-full">
+            <div class="bg-paper-dark/20 dark:bg-white/5 border border-paper-dark dark:border-white/10 p-5 rounded-[2px] flex items-start gap-4 hover:-translate-y-1 transition-transform">
+              <div class="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center shrink-0 font-bold text-lg"><i class="fa-solid fa-crosshairs"></i></div>
+              <div>
+                <h3 class="font-bold text-base text-ink dark:text-white mb-1">Escopo Fechado (1 Demanda)</h3>
+                <p class="text-xs text-ink-light dark:text-white/70 leading-relaxed">Aplicaremos o toolkit na próxima demanda de alto risco que chegar, atuando como laboratório controlado.</p>
+              </div>
+            </div>
+            <div class="bg-paper-dark/20 dark:bg-white/5 border border-paper-dark dark:border-white/10 p-5 rounded-[2px] flex items-start gap-4 hover:-translate-y-1 transition-transform">
+              <div class="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center shrink-0 font-bold text-lg"><i class="fa-solid fa-check-to-slot"></i></div>
+              <div>
+                <h3 class="font-bold text-base text-ink dark:text-white mb-1">Seleção da Ferramenta</h3>
+                <p class="text-xs text-ink-light dark:text-white/70 leading-relaxed">Avaliaremos o contexto da demanda e utilizaremos <strong>apenas o método mais adequado</strong> do kit.</p>
+              </div>
+            </div>
+            <div class="bg-paper-dark/20 dark:bg-white/5 border border-paper-dark dark:border-white/10 p-5 rounded-[2px] flex items-start gap-4 hover:-translate-y-1 transition-transform">
+              <div class="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center shrink-0 font-bold text-lg"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <h3 class="font-bold text-base text-ink dark:text-white mb-1">Zero Burocracia</h3>
+                <p class="text-xs text-ink-light dark:text-white/70 leading-relaxed">Eu mesmo preparo o material, facilito as discussões (respeitando timeboxes curtos) e documento as definições.</p>
+              </div>
+            </div>
+            <div class="bg-paper-dark/20 dark:bg-white/5 border border-paper-dark dark:border-white/10 p-5 rounded-[2px] flex items-start gap-4 hover:-translate-y-1 transition-transform">
+              <div class="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center shrink-0 font-bold text-lg"><i class="fa-solid fa-chart-line"></i></div>
+              <div>
+                <h3 class="font-bold text-base text-ink dark:text-white mb-1">Avaliação de ROI</h3>
+                <p class="text-xs text-ink-light dark:text-white/70 leading-relaxed">Ao final da entrega da demanda, reporto o quanto de tempo estimamos ter economizado na execução.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-paper-dark/30 dark:bg-white/5 border border-accent/20 rounded-[2px] p-6 mb-8 w-full shadow-sm border-l-4 border-l-accent">
+            <h3 class="font-bold text-ink dark:text-white mb-4 text-sm flex items-center"><i class="fa-solid fa-bullseye text-accent mr-3"></i> Nossas Métricas de Sucesso Pré-Definidas</h3>
+            <ul class="text-xs text-ink-light dark:text-white/80 space-y-3 font-medium">
+              <li class="flex items-start gap-3"><i class="fa-solid fa-check text-accent mt-0.5"></i> <span><strong>Zero Retornos:</strong> Nenhuma refação significativa durante o desenvolvimento por causa de requisitos cegos.</span></li>
+              <li class="flex items-start gap-3"><i class="fa-solid fa-check text-accent mt-0.5"></i> <span><strong>Redução de Tempo:</strong> Queda estimada de 20% no ciclo total de Design/Dev da funcionalidade.</span></li>
+              <li class="flex items-start gap-3"><i class="fa-solid fa-check text-accent mt-0.5"></i> <span><strong>Alinhamento:</strong> Feedback positivo da equipe de engenharia sobre a clareza técnica antes do início do código.</span></li>
+            </ul>
+          </div>
+          
+          <div class="pt-6 border-t border-paper-dark dark:border-white/10 w-full">
+             <h4 class="text-[9px] font-bold text-ink-light dark:text-white/50 uppercase tracking-widest mb-4 flex items-center gap-2">
+               <i class="fa-solid fa-book"></i> Acervo Analítico do Pitch
+             </h4>
+             <ul class="text-[11px] text-ink-light dark:text-white/50 space-y-2 font-medium leading-relaxed">
+               <li><strong class="text-ink dark:text-white/80">*1. Custo do Retrabalho:</strong> Barry Boehm, "Software Engineering Economics".</li>
+               <li><strong class="text-ink dark:text-white/80">*2. Causa de Falhas:</strong> Project Management Institute (PMI) Pulse of the Profession & Standish Group CHAOS Report.</li>
+               <li><strong class="text-ink dark:text-white/80">*3. Testes Rápidos:</strong> Jakob Nielsen (Nielsen Norman Group), "Why You Only Need to Test with 5 Users".</li>
+             </ul>
+          </div>
+        `
+      }
+    ];
+
+    let currentSlide = 0;
+
+    // --- CONTROLE DA APRESENTAÇÃO ---
+    function startPresentation() {
+      currentSlide = 0;
+      switchView('slides');
+      renderSlide();
+    }
+
+    function switchView(view) {
+      const views = ['view-intro', 'view-slides'];
+      views.forEach(v => {
+        const el = document.getElementById(v);
+        if (el) el.classList.add('hidden');
+      });
+      
+      const targetView = document.getElementById(`view-${view}`);
+      if (targetView) targetView.classList.remove('hidden');
+    }
+
+    function renderSlide() {
+      const slide = presentationSlides[currentSlide];
+      if (!slide) return;
+      
+      const slideNum = String(currentSlide + 1).padStart(2, '0');
+      const totalSlides = String(presentationSlides.length).padStart(2, '0');
+
+      // Update counters & progress
+      document.getElementById('slide-counter').innerText = `${slideNum}/${totalSlides}`;
+      const progressBar = document.getElementById('progress-bar');
+      progressBar.style.width = `${((currentSlide + 1) / presentationSlides.length) * 100}%`;
+      
+      // Aplicar Sistema de Cores Temático
+      const theme = colorThemes[slide.themeKey || 'default'];
+      progressBar.style.backgroundColor = theme.hex;
+
+      const badge = document.getElementById('slide-badge');
+      badge.innerText = `${slide.badge}`;
+      badge.className = `inline-block py-1 px-3 border text-[9px] font-bold tracking-widest uppercase w-max mb-4 rounded-full shadow-sm ${theme.text} ${theme.bg} ${theme.border}`;
+
+      document.getElementById('slide-title').innerText = slide.title;
+      
+      const intro = document.getElementById('slide-intro');
+      intro.innerText = slide.intro;
+      intro.className = `text-base md:text-lg text-ink-light dark:text-white/70 leading-relaxed mb-8 font-medium border-l-4 pl-4 py-1 ${theme.borderLeft}`;
+      
+      // Handle Text Container & Full Width layouts
+      const textContainer = document.getElementById('slide-text-container');
+      const illusContainer = document.getElementById('slide-illustration-container');
+      
+      if (slide.fullWidth || !slide.illustration) {
+        illusContainer.classList.add('hidden');
+        illusContainer.classList.remove('flex');
+        textContainer.classList.add('md:col-span-2');
+      } else {
+        illusContainer.classList.remove('hidden');
+        illusContainer.classList.add('flex');
+        textContainer.classList.remove('md:col-span-2');
+        illusContainer.innerHTML = slide.illustration;
+      }
+      
+      // Inject text content
+      document.getElementById('slide-content-container').innerHTML = slide.content;
+
+      // Handle Slide dynamic reference footer
+      const refContainer = document.getElementById('slide-reference-container');
+      const refText = document.getElementById('slide-reference-text');
+      if (slide.reference && !slide.fullWidth) {
+        refText.innerHTML = slide.reference;
+        refContainer.classList.remove('hidden');
+      } else {
+        refContainer.classList.add('hidden');
+      }
+
+      // Retrigger Animation on Grid to ensure it feels fresh per slide
+      const slideGrid = document.getElementById('slide-grid');
+      slideGrid.classList.remove('animate-fade-in-up');
+      void slideGrid.offsetWidth; // force reflow
+      slideGrid.classList.add('animate-fade-in-up');
+
+      updateNavButtons();
+    }
+
+    function updateNavButtons() {
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const btnRestart = document.getElementById('btn-restart');
+      const navFooter = document.getElementById('nav-footer');
+
+      btnPrev.disabled = currentSlide === 0;
+
+      if (currentSlide === presentationSlides.length - 1) {
+        // Step final
+        btnPrev.classList.add('hidden');
+        btnNext.classList.add('hidden');
+        btnNext.classList.remove('flex');
+        btnRestart.classList.remove('hidden');
+        btnRestart.classList.add('flex');
+        
+        // Centraliza o footer no último slide
+        navFooter.classList.remove('justify-between', 'flex-col-reverse', 'md:flex-row');
+        navFooter.classList.add('justify-center');
+      } else {
+        // Slides normais
+        btnPrev.classList.remove('hidden');
+        btnNext.classList.remove('hidden');
+        btnNext.classList.add('flex');
+        btnRestart.classList.add('hidden');
+        btnRestart.classList.remove('flex');
+        
+        // Espaça os botões
+        navFooter.classList.add('justify-between', 'flex-col-reverse', 'md:flex-row');
+        navFooter.classList.remove('justify-center');
+      }
+    }
+
+    function handleNext() {
+      if (currentSlide < presentationSlides.length - 1) {
+        currentSlide++;
+        renderSlide();
+      }
+    }
+
+    function handlePrev() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        renderSlide();
+      }
+    }
+
+    // --- INICIALIZAÇÃO ---
+    window.addEventListener('DOMContentLoaded', () => {
+      // Mostrar a View Intro do Discovery por padrão
+    });
+
+  </script>
+</body>
+</html>
